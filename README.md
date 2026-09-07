@@ -94,6 +94,12 @@ cp ./vendor/laravel-lang/lang/json/ja.json ./lang/
 cp -r ./vendor/laravel-lang/lang/src/ja ./lang/
 ```
 
+#### 8. その他(フロントエンド)
+```
+npm install axios
+npm list axios
+```
+
 #### 8. 認証の設定
 ※下記で、`config/core.php`
 ```
