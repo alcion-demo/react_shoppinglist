@@ -4,7 +4,7 @@ services:
     build:
       context: ./php
       dockerfile: Dockerfile
-    container_name: todo_php
+    container_name: shop_php
     volumes:
       - ./backend:/var/www/html
       - .:/workspaces/spa_shopping
@@ -14,7 +14,7 @@ services:
 
   nginx:
     image: nginx:1.25-alpine
-    container_name: todo_nginx
+    container_name: shop_nginx
     ports:
       - "8000:80"
     volumes:
@@ -25,7 +25,7 @@ services:
 
   node:
     image: node:22-alpine
-    container_name: todo_node
+    container_name: shop_node
     working_dir: /var/www/frontend
     volumes:
       - ./frontend:/var/www/frontend
@@ -35,7 +35,7 @@ services:
 
   db:
     image: mysql:8.0
-    container_name: todo_mysql
+    container_name: shop_mysql
     ports:
       - "3306:3306"
     environment:
@@ -49,7 +49,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: todo_phpmyadmin
+    container_name: shop_phpmyadmin
     environment:
       PMA_HOST: db
       PMA_USER: shop

@@ -19,9 +19,10 @@ type DisplayCardProps = {
     shopTypes: ShopType[];
     onEdit: () => void;
     onDelete: () => void;
+    onPurchase: () => void;
 };
 
-const DisplayCard = ({ item, shopTypes, onEdit, onDelete } : DisplayCardProps) => {
+const DisplayCard = ({ item, shopTypes, onEdit, onDelete, onPurchase } : DisplayCardProps) => {
     const shopTypeLabel = shopTypes.find(
         (type) => type.value === item.shop_type
     )?.label;
@@ -32,7 +33,7 @@ const DisplayCard = ({ item, shopTypes, onEdit, onDelete } : DisplayCardProps) =
           {/* テキスト情報エリア */}
           <div className="flex-1 min-w-0 mr-4">
 
-              <div className="text-gray-900 dark:text-gray-100 font-bold text-sm truncate mb-1">
+              <div className="text-left text-gray-900 dark:text-gray-100 font-bold text-sm truncate mb-1">
                   {item.item.name}
               </div>
 
@@ -54,11 +55,9 @@ const DisplayCard = ({ item, shopTypes, onEdit, onDelete } : DisplayCardProps) =
 
                   {item.quantity && (
                       <span className="flex items-center gap-1">
-                          {item.price > 0 && (
-                              <span className="text-[9px] text-gray-400 dark:text-gray-600">
-                                  ×
-                              </span>
-                          )}
+                          <span className="text-[9px] text-gray-400 dark:text-gray-600">
+                              ×
+                          </span>
 
                           <span>{item.quantity}</span>
                       </span>
@@ -74,6 +73,7 @@ const DisplayCard = ({ item, shopTypes, onEdit, onDelete } : DisplayCardProps) =
               <button
                   type="button"
                   title="購入完了"
+                  onClick={onPurchase}
                   className="w-8 h-8 flex items-center justify-center rounded-lg
                             bg-emerald-500/10 text-emerald-400"
               >

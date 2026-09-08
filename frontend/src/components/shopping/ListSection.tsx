@@ -34,16 +34,19 @@ const ListSection = ({ shopTypes, items, onAdded }: ListSectionProps) => {
   const [error, setError] = useState('');
   const [editingCartId, setEditingCartId] = useState<number | null>(null);
 
+  const [isFormActive, setIsFormActive] = useState(false);
+
   const handleAdd = async (event: any) => {
     event.preventDefault();
+    setIsFormActive(true);
     setError('');
 
-        console.log({
-      name: name,
-      shop_type: shopType,
-      price: price === '' ? null : Number(price),
-      quantity: quantity === '' ? null : quantity,
-        });
+      console.log({
+        name: name,
+        shop_type: shopType,
+        price: price === '' ? null : Number(price),
+        quantity: quantity === '' ? null : quantity,
+      });
     
     try {
       await api.post('/api/shopping-items', {
@@ -83,6 +86,16 @@ const ListSection = ({ shopTypes, items, onAdded }: ListSectionProps) => {
     } catch (error) {
         console.error('shopping item delete error:', error);
     }
+  };
+
+  const handlePurchase = async (id: number) => {
+      try {
+          await api.post(`/api/shopping-items/${id}/purchase`);
+
+          onAdded();
+      } catch (error) {
+          console.error('shopping item purchase error:', error);
+      }
   };
 
   return (
@@ -156,6 +169,24 @@ const ListSection = ({ shopTypes, items, onAdded }: ListSectionProps) => {
               />
 
           </div>
+
+          {isFormActive && (
+              <button
+                  type="button"
+                  onClick={() => {
+                      setName('');
+                      setShopType(shopTypes[0]?.value ?? '');
+                      setPrice('');
+                      setQuantity('');
+                      setError('');
+                      setIsFormActive(false);
+                  }}
+                  className="w-full py-2 text-sm text-gray-500"
+              >
+                  キャンセル
+              </button>
+          )}
+
           {error && (
               <p className="text-sm text-red-500">
                   {error}
@@ -188,6 +219,7 @@ const ListSection = ({ shopTypes, items, onAdded }: ListSectionProps) => {
                           shopTypes={shopTypes}
                           onEdit={() => setEditingCartId(item.id)}
                           onDelete={() => handleDelete(item.id)}
+                          onPurchase={() => handlePurchase(item.id)}
                       />
                   )}
               </div>
