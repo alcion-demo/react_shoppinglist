@@ -27,17 +27,17 @@ type ShoppingData = {
 const ShoppingPage = () => {
   const [data, setData] = useState<ShoppingData | null>(null);
 
+  const fetchShoppingData = async () => {
+      try {
+          const response = await api.get('/api/shopping-items');
+
+          setData(response.data);
+      } catch (error) {
+          console.error('shopping data error:', error);
+      }
+  };
+
   useEffect(() => {
-      const fetchShoppingData = async () => {
-          try {
-              const response = await api.get('/api/shopping-items');
-
-              setData(response.data);
-          } catch (error) {
-              console.error('shopping data error:', error);
-          }
-      };
-
       fetchShoppingData();
   }, []);
 
@@ -54,6 +54,7 @@ const ShoppingPage = () => {
               <ListSection
                   shopTypes={data.shopTypes}
                   items={data.items}
+                  onAdded={fetchShoppingData}
               />
             </div>
 

@@ -9,9 +9,17 @@ use App\Models\PurchaseLog;
 use App\Services\ShoppingService;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\ShopType;
+use App\Http\Requests\StoreShoppingRequest;
 
 class ShoppingController extends Controller
 {
+    /**
+     * __construct
+     */
+    public function __construct(
+        protected ShoppingService $shoppingService,
+    ){}
+
     /**
      * Display a listing of the resource.
      */
@@ -42,9 +50,23 @@ class ShoppingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreShoppingRequest $request, ShoppingService $shoppingService)
     {
-        //
+        $userId = Auth::id();
+
+        $validated = $request->validated();
+        $this->shoppingService->savePurchase($userId, [
+            'name'      => $validated['name'],
+            'shop_type' => $validated['shop_type'],
+            'price'     => $validated['price'],
+            'quantity'  => $validated['quantity'] !== ''
+                ? $validated['quantity']
+                : null,
+        ]);
+
+        return response()->json([
+            'message' => 'リストに追加しました',
+        ]);
     }
 
     /**
