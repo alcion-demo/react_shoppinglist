@@ -87,6 +87,24 @@ class ShoppingService
     }
 
     /**
+     * 削除
+     *
+     * @param integer $userId
+     * @param integer $cartId
+     * @return void
+     */
+    public function deleteCart(int $userId, int $cartId): void
+    {
+        $cart = CurrentCart::with('item')
+            ->whereHas('item', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->findOrFail($cartId);
+
+        $cart->delete();
+    }
+
+    /**
      * Gemini API連携: 献立提案
      */
     // public function getRecipeSuggestions(array $items)
