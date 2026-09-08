@@ -10,6 +10,7 @@ use App\Services\ShoppingService;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\ShopType;
 use App\Http\Requests\StoreShoppingRequest;
+use App\Http\Requests\UpdateShoppingRequest;
 
 class ShoppingController extends Controller
 {
@@ -40,6 +41,8 @@ class ShoppingController extends Controller
                 ->get()
                 ->groupBy('purchased_date_string'),
 
+            //map()一個ずつ処理して、その処理結果を新しいCollectionにする
+            //function ($type)
             'shopTypes' => collect(ShopType::cases())->map(fn ($type) => [
                 'value' => $type->value,
                 'label' => $type->label(),
@@ -77,12 +80,31 @@ class ShoppingController extends Controller
         //
     }
 
+ 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateShoppingRequest $request, string $id)
     {
-        //
+        // バリデーションを実行
+        $validated = $request->validated();
+
+        $this->shoppingService->updateCart(
+            Auth::id(),
+            $id,
+            [
+                'name'      => $validated['name'],
+                'shop_type' => $validated['shop_type'],
+                'price'     => $validated['price'],
+                'quantity'  => $validated['quantity'] !== ''
+                    ? $validated['quantity']
+                    : null,
+            ]
+        );
+
+        return response()->json([
+            'message' => '変更を保存しました',
+        ]);
     }
 
     /**
@@ -90,6 +112,13 @@ class ShoppingController extends Controller
      */
     public function destroy(string $id)
     {
-        //
-    }
+        $this->shoppingService->deleteCart(
+            Auth::id(),
+            (int) $id
+        );
+
+        return response()->json([
+            'message' => 'リストから削除しました',
+        ]);
+        }
 }
