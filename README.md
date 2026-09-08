@@ -16,12 +16,12 @@
 - Laravel 13ベースのバックエンドと、React + TypeScript + Vite のフロントエンドを含む構成。
 - backend 側は Laravel アプリケーション、frontend 側は React SPA。
 - Docker Compose で `app` / nginx / `node` / `db(mysql)` / `phpmyadmin` を起動する構成。
-- 実装済み機能は、Todo リソースのCRUD APIと、それを呼び出す React フロントエンド。
+- 以前実装したLivewire版買い物リストをReactへ移植。
 - 管理者ユーザー管理機能
 
 ## 学習・検証目的
 - CRUD + API通信の理解
-- バックエンドからフロントエンドへ
+- 以前実装したLivewire版買い物リストをReactで実装仕直す。
 - SPAでの認証についての理解
 - バックエンドを中心とした開発において、フロントエンドとの連携に必要な知識・実装の理解
 - React / TypeScriptからLaravel APIを利用する一連の流れの検証

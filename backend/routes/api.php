@@ -9,5 +9,5 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/shopping-items', [ShoppingController::class, 'index']);
+    Route::apiResource('shopping-items', ShoppingController::class);
 });
