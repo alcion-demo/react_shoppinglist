@@ -11,8 +11,10 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 
-#[Fillable(['shopping_item_id', 'price', 'quantity' ,'shop_type', 'purchased_at'])]
+#[Fillable(['shopping_item_id', 'price',
+'quantity' ,'shop_type', 'purchased_at'])]
 class PurchaseLog extends Model
 {
     protected $casts = [
@@ -62,6 +64,7 @@ class PurchaseLog extends Model
     public static function getFrequentItems(int $userId, int $limit = 5)
     {
         return self::forUser($userId)
+            ->with('item')
             ->get()
             ->groupBy('shopping_item_id')
             ->sortByDesc(fn($logs) => $logs->count())
@@ -76,7 +79,7 @@ class PurchaseLog extends Model
      * @param integer $shoppingItemId
      * @return void
      */
-    public static function getRecentPurchaseIn3Days(int $userId, int $shoppingItemId)
+    public static function getRecentPurchaseIn3Days(int $userId, int $shoppingItemId): Collection
     {
         $log = self::forUser($userId)
             ->where('shopping_item_id', $shoppingItemId)

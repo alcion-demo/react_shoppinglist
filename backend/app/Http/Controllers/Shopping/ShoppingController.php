@@ -33,7 +33,9 @@ class ShoppingController extends Controller
                 ->with('item.recentPurchaseLogs')
                 ->get(),
 
-            'frequentItems' => PurchaseLog::getFrequentItems($userId),
+            'frequentItems' => collect(
+                PurchaseLog::getFrequentItems($userId)
+            )->values(),
 
             'history' => PurchaseLog::forUser($userId)
                 ->with('item')
@@ -61,8 +63,8 @@ class ShoppingController extends Controller
         $this->shoppingService->savePurchase($userId, [
             'name'      => $validated['name'],
             'shop_type' => $validated['shop_type'],
-            'price'     => $validated['price'],
-            'quantity'  => $validated['quantity'] !== ''
+            'price'     => $validated['price'] ?? null,
+            'quantity'  => ($validated['quantity'] ?? '') !== ''
                 ? $validated['quantity']
                 : null,
         ]);
@@ -95,10 +97,8 @@ class ShoppingController extends Controller
             [
                 'name'      => $validated['name'],
                 'shop_type' => $validated['shop_type'],
-                'price'     => $validated['price'],
-                'quantity'  => $validated['quantity'] !== ''
-                    ? $validated['quantity']
-                    : null,
+                'price'     => $validated['price'] ?? 0,
+                'quantity'  => $validated['quantity'] ?? null,
             ]
         );
 
@@ -120,5 +120,15 @@ class ShoppingController extends Controller
         return response()->json([
             'message' => 'リストから削除しました',
         ]);
-        }
+    }
+
+    public function purchase(ShoppingService $shoppingService, int $id)
+    {
+        $log = $shoppingService->recordPurchase($id, []);
+
+        return response()->json([
+            'message' => '購入を記録しました！',
+            'purchaseLog' => $log,
+        ]);
+    }
 }

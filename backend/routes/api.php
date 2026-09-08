@@ -10,4 +10,5 @@ Route::get('/user', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('shopping-items', ShoppingController::class);
+    Route::post('/shopping-items/{id}/purchase', [ShoppingController::class, 'purchase']);
 });

@@ -67,7 +67,7 @@ class ShoppingService
      * @param array $data
      * @return void
      */
-    public function recordPurchase(int $cartId, array $data): PurchaseLog
+    public function recordPurchase(int $cartId, array $data)
     {
         $cart = CurrentCart::findOrFail($cartId);
 
