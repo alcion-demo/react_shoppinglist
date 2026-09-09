@@ -73,6 +73,7 @@ docker compose run --rm node sh
 npm create vite@latest . -- --template react-ts
 npm install
 npm install tailwindcss @tailwindcss/vite
+npm install @iconify/react
 ```
 #### 5. .env修正・作成  
 ※ バックエンドはcompose.ymlに設定した内容に修正。

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import api from '../../utils/axios';
 import ListSection from './ListSection';
 import QuickMenu from './QuickMenu';
+import HistorySection from './HistorySection';
+import BottomNav from '../BottomNav';
 
 type ShopType = {
     value: number;
@@ -20,10 +22,23 @@ type ShoppingItem = {
     };
 };
 
+type PurchaseHistory = {
+    id: number;
+    purchased_at: string;
+    price: number | null;
+    quantity: string | null;
+    shop_type: number;
+    item: {
+        id: number;
+        name: string;
+    };
+};
+
 type ShoppingData = {
     items: ShoppingItem[];
     shopTypes: ShopType[];
     frequentItems: FrequentItem[] | Record<string, FrequentItem>;
+    history: Record<string, PurchaseHistory[]>;
 };
 
 type FrequentItem = {
@@ -36,16 +51,27 @@ type FrequentItem = {
 
 const ShoppingPage = () => {
   const [data, setData] = useState<ShoppingData | null>(null);
+  const [activeTab, setActiveTab] = useState('list');
 
   const fetchShoppingData = async () => {
       try {
           const response = await api.get('/api/shopping-items');
         // console.log('shopping data:', response.data);
 
-console.log(
-    'frequentItems:',
-    response.data.frequentItems
-);
+        console.log(
+            'frequentItems:',
+            response.data.frequentItems
+        );
+
+        console.log(
+            'history:',
+            response.data.history
+        );
+
+        console.log(
+            'items:',
+            response.data.items
+        );
 
         setData(response.data);
       } catch (error) {
@@ -70,30 +96,42 @@ console.log(
         <div className="pb-32 p-4">
           
             {/* クイックメニュー */}
-            <QuickMenu
-                frequentItems={frequentItems}
-                items={data.items}
-                onAdded={fetchShoppingData}
-            />
+            {activeTab === 'list' && (
+                <>
+                    <QuickMenu
+                        frequentItems={frequentItems}
+                        items={data.items}
+                        onAdded={fetchShoppingData}
+                    />
 
-            {/* 買い物リスト */}
-            <div>
-              <ListSection
-                  shopTypes={data.shopTypes}
-                  items={data.items}
-                  onAdded={fetchShoppingData}
-              />
-            </div>
+                    <div>
+                        <ListSection
+                            shopTypes={data.shopTypes}
+                            items={data.items}
+                            onAdded={fetchShoppingData}
+                        />
+                    </div>
+                </>
+            )}
 
             {/* 履歴 */}
-            <div>
-                <h2>履歴</h2>
-            </div>
+            {activeTab === 'history' && (
+                <div>
+                    <HistorySection history={data.history} />
+                </div>
+            )}
 
             {/* レシピ */}
-            <div>
-                <h2>レシピ</h2>
-            </div>
+            {activeTab === 'recipe' && (
+                <div>
+                    <h2>レシピ</h2>
+                </div>
+            )}
+
+            <BottomNav
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+            />
 
         </div>
     </div>

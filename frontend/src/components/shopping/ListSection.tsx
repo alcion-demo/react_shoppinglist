@@ -13,6 +13,7 @@ type ShoppingItem = {
     price: number;
     quantity: string | null;
     shop_type: number;
+    recentPurchasedAt: string | null;
     item: {
         id: number;
         name: string;
