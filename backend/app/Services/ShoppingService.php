@@ -9,8 +9,10 @@ use App\Models\PurchaseLog;
 use App\Enums\ShopType;
 use App\Models\CurrentCart;
 // use App\Ai\Agents\NoblemanAgent;
+use Carbon\Carbon;
 
 class ShoppingService
+
 {
     /**
      * Create a new class instance.
@@ -146,6 +148,23 @@ class ShoppingService
     //     return false;
     // }
 
+
+    /**
+     * 3日以内の購入判定
+     *
+     * @param integer $userId
+     * @param integer $shoppingItemId
+     * @return \Carbon\Carbon|null
+     */
+    public function getRecentPurchasedAt(int $userId, int $shoppingItemId): ?\Carbon\Carbon
+    {
+        return PurchaseLog::forUser($userId)
+            ->where('shopping_item_id', $shoppingItemId)
+            ->where('purchased_at', '>=', now()->subDays(3))
+            ->latest('purchased_at')
+            ->first()?->purchased_at;
+    }
+
     public function updateCart(int $userId, int $cartId, array $data): CurrentCart
     {
         $cart = CurrentCart::with('item')
@@ -166,4 +185,5 @@ class ShoppingService
 
         return $cart;
     }
+
 }

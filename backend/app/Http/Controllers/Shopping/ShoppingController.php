@@ -28,10 +28,21 @@ class ShoppingController extends Controller
     {
         $userId = Auth::id();
 
+        $items = CurrentCart::forUser($userId)
+        ->with('item')
+        ->get()
+        ->map(function ($cart) use ($userId) {
+            return [
+                ...$cart->toArray(),
+                'recentPurchasedAt' => $this->shoppingService->getRecentPurchasedAt(
+                    $userId,
+                    $cart->shopping_item_id
+                ),
+            ];
+        });
+
         return response()->json([
-            'items' => CurrentCart::forUser($userId)
-                ->with('item.recentPurchaseLogs')
-                ->get(),
+            'items' => $items,
 
             'frequentItems' => collect(
                 PurchaseLog::getFrequentItems($userId)
@@ -43,7 +54,7 @@ class ShoppingController extends Controller
                 ->get()
                 ->groupBy('purchased_date_string'),
 
-            //map()一個ずつ処理して、その処理結果を新しいCollectionにする
+            //カート1件ずつ処理して、recentPurchasedAt を追加した新しいCollectionにする
             //function ($type)
             'shopTypes' => collect(ShopType::cases())->map(fn ($type) => [
                 'value' => $type->value,

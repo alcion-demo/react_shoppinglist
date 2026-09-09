@@ -8,6 +8,7 @@ type ShoppingItem = {
     price: number;
     quantity: string | null;
     shop_type: number;
+    recentPurchasedAt: string | null;
     item: {
         id: number;
         name: string;
@@ -35,6 +36,15 @@ const DisplayCard = ({ item, shopTypes, onEdit, onDelete, onPurchase } : Display
 
               <div className="text-left text-gray-900 dark:text-gray-100 font-bold text-sm truncate mb-1">
                   {item.item.name}
+
+                  {item.recentPurchasedAt && (
+                      <span className="inline-flex items-center ml-1.5 px-1.5 py-0.5 rounded-md text-[10px] font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap">
+                          {new Date(item.recentPurchasedAt).toLocaleDateString('ja-JP', {
+                              month: '2-digit',
+                              day: '2-digit',
+                          })}済
+                      </span>
+                  )}
               </div>
 
               <div className="flex items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400">
