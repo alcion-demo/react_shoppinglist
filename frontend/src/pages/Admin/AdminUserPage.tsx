@@ -125,10 +125,10 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
 };
 
   return (
-    <div>
+    <div className="max-w-md mx-auto px-4 pb-32">
       <header className="px-4 py-6">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-xl font-black text-slate-950 dark:text-white tracking-tighter uppercase">
+          <h1 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
             ユーザー管理
           </h1>
 
@@ -182,13 +182,13 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
               placeholder="ユーザーを検索"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              className="flex-1 rounded border border-gray-300 px-3 py-2"
+              className="min-w-0 flex-1 rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
             />
 
             <button
               type="button"
               onClick={() => setSearchKeyword(keyword)}
-              className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+              className="shrink-0 rounded-xl bg-blue-600 px-4 py-2 text-sm font-bold text-white hover:bg-blue-700"
             >
               検索
             </button>
@@ -199,7 +199,7 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
                 setKeyword("");
                 setSearchKeyword("");
               }}
-              className="rounded border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="shrink-0 rounded-xl border border-slate-600 px-4 py-2 text-sm font-bold text-slate-300 hover:bg-slate-800"
             >
               クリア
             </button>
@@ -212,8 +212,8 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
               setErrors({});
               setShowForm(true);
             }}
-            className="mb-4 flex w-full items-center justify-between rounded-2xl border border-blue-500/30 bg-white/50 p-3 shadow-sm transition-all active:scale-[0.98]"
-          >
+              className="mb-4 flex w-full items-center justify-between rounded-2xl border border-blue-500/30 bg-white p-3 shadow-sm transition-all active:scale-[0.98] dark:bg-slate-800"
+            >
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md">
                 <svg
@@ -260,15 +260,17 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
           </button>
 
           {/* ユーザー一覧 */}
-          {filteredUsers.map((user) => (
-            <UserItem
-              key={user.id}
-              user={user}
-              deleteUser={deleteUser}
-              updateUser={updateUser}
-              onEdit={(user) => setEditingUser(user)}
-            />
-          ))}
+          <div className="space-y-3">
+            {filteredUsers.map((user) => (
+              <UserItem
+                key={user.id}
+                user={user}
+                deleteUser={deleteUser}
+                updateUser={updateUser}
+                onEdit={(user) => setEditingUser(user)}
+              />
+            ))}
+          </div>
         </>
       )}
     </div>
