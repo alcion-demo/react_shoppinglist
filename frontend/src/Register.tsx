@@ -54,22 +54,22 @@ console.log('registered user:', userResponse.data);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-md rounded-lg p-6 shadow">
-        <h1 className="mb-6 text-2xl font-bold text-center">REGISTER</h1>
+    <div className="min-h-screen bg-slate-900 px-4 flex items-center justify-center px-4">
+      <div className="w-full max-w-md rounded-lg border border-slate-700 bg-slate-800 p-6 shadow">
+        <h1 className="mb-6 text-2xl font-bold text-center text-slate-200">REGISTER</h1>
 
         <form onSubmit={handleRegister}>
           <div className="space-y-4">
             <div>
               <div className="flex items-center gap-3">
-                <label className="min-w-[100px] shrink-0 text-left text-sm text-gray-700">
+                <label className="min-w-[100px] shrink-0 text-left text-sm text-slate-200">
                   名前
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded border p-2"
+                  className="w-full rounded border border-slate-600 bg-slate-700 p-2 text-white"
                 />
               </div>
               {errors.name?.[0] && <p className="mt-1 text-sm text-red-500">{errors.name[0]}</p>}
@@ -77,14 +77,14 @@ console.log('registered user:', userResponse.data);
 
             <div>
               <div className="flex items-center gap-3">
-                <label className="min-w-[100px] shrink-0 text-left text-sm text-gray-700">
+                <label className="min-w-[100px] shrink-0 text-left text-sm text-slate-200">
                   メールアドレス
                 </label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded border p-2"
+                  className="w-full rounded border border-slate-600 bg-slate-700 p-2 text-white"
                 />
               </div>
               {errors.email?.[0] && <p className="mt-1 text-sm text-red-500">{errors.email[0]}</p>}
@@ -92,14 +92,14 @@ console.log('registered user:', userResponse.data);
 
             <div>
               <div className="flex items-center gap-3">
-                <label className="min-w-[100px] shrink-0 text-left text-sm text-gray-700">
+                <label className="min-w-[100px] shrink-0 text-left text-sm text-slate-200">
                   パスワード
                 </label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded border p-2"
+                  className="w-full rounded border border-slate-600 bg-slate-700 p-2 text-white"
                 />
               </div>
               {errors.password?.[0] && <p className="mt-1 text-sm text-red-500">{errors.password[0]}</p>}
@@ -107,14 +107,14 @@ console.log('registered user:', userResponse.data);
 
             <div>
               <div className="flex items-center gap-3">
-                <label className="min-w-[100px] shrink-0 text-left text-sm text-gray-700">
+                <label className="min-w-[100px] shrink-0 text-left text-sm text-slate-200">
                   パスワード確認
                 </label>
                 <input
                   type="password"
                   value={passwordConfirmation}
                   onChange={(e) => setPasswordConfirmation(e.target.value)}
-                  className="w-full rounded border p-2"
+                  className="w-full rounded border border-slate-600 bg-slate-700 p-2 text-white"
                 />
               </div>
               {errors.password?.[0] && <p className="mt-1 text-sm text-red-500">{errors.password[0]}</p>}
@@ -130,7 +130,7 @@ console.log('registered user:', userResponse.data);
             </button>
           </div>
         </form>
-        <div className="mt-4 text-center">
+        <div className="mt-4 text-center text-slate-200">
           <button
             type="button"
             onClick={onBackToLogin}

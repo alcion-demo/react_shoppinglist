@@ -54,7 +54,6 @@ type FrequentItem = {
 const ShoppingPage = () => {
   const [data, setData] = useState<ShoppingData | null>(null);
   const [activeTab, setActiveTab] = useState('list');
-  const [message, setMessage] = useState('');
 
   const fetchShoppingData = async () => {
       try {
@@ -98,11 +97,6 @@ const ShoppingPage = () => {
     <div className="max-w-md mx-auto">
         <div className="pb-32 p-4">
 
-            {message && (
-                <div className="mb-4 rounded-2xl bg-green-50 px-4 py-3 text-sm font-bold text-green-600 dark:bg-green-500/10 dark:text-green-400">
-                    {message}
-                </div>
-            )}
             {/* クイックメニュー */}
             {activeTab === 'list' && (
                 <>
@@ -111,7 +105,6 @@ const ShoppingPage = () => {
                         items={data.items}
                         onAdded={() => {
                             fetchShoppingData();
-                            setMessage('買い物リストに追加しました。');
                         }}
                     />
 
@@ -119,9 +112,8 @@ const ShoppingPage = () => {
                         <ListSection
                             shopTypes={data.shopTypes}
                             items={data.items}
-                            onActionSuccess={(message) => {
+                            onActionSuccess={() => {
                                 fetchShoppingData();
-                                setMessage(message);
                             }}
                         />
                     </div>
