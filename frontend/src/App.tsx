@@ -4,7 +4,9 @@ import AppLayout from './components/Layout/AppLayout';
 import Login from './login';
 import Register from './Register';
 import api from './utils/axios';
-import ShoppingPage from './components/shopping/ShoppingPage';
+import ShoppingPage from './pages/shopping/ShoppingPage';
+import AdminUserPage from './pages/Admin/AdminUserPage';
+import SettingsPage from './pages/Settings/SettingsPage';
 
 type User = {
   id: number;
@@ -17,7 +19,11 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [showRegister, setShowRegister] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  
+
+  const [currentPage, setCurrentPage] = useState<
+  'shopping' | 'adminUsers' | 'settings'
+  >('shopping');
+
   useEffect(() => {
     const checkLogin = async () => {
       try {
@@ -52,8 +58,12 @@ const App = () => {
 
   // ログアウト
   const logout = async () => {
+    console.log('ログアウトボタン押した');
+
     try {
-      await api.post('/logout');
+      const response = await api.post('/api/logout');
+
+      console.log('logout response:', response.status);
 
       setUser(null);
       setIsLoggedIn(false);
@@ -88,8 +98,25 @@ const App = () => {
 
   // ログイン済み
   return (
-    <AppLayout>
-      <ShoppingPage />
+    <AppLayout setCurrentPage={setCurrentPage}
+      logout={logout}
+    >
+      {currentPage === 'shopping' && <ShoppingPage />}
+      {currentPage === 'adminUsers' && (
+        <AdminUserPage
+          onClose={() => setCurrentPage('shopping')}
+        />
+      )}
+      {currentPage === 'settings' && (
+        <SettingsPage
+          user={user}
+          onCancel={() => setCurrentPage('shopping')}
+          onDeleted={() => {
+            setUser(null);
+            setIsLoggedIn(false);
+          }}
+        />
+      )}
     </AppLayout>
   );
 };
