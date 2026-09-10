@@ -3,7 +3,8 @@ import api from '../../utils/axios';
 import ListSection from './ListSection';
 import QuickMenu from './QuickMenu';
 import HistorySection from './HistorySection';
-import BottomNav from '../BottomNav';
+import BottomNav from '../../components/BottomNav';
+import Header from '../../components/Header';
 
 type ShopType = {
     value: number;
@@ -16,6 +17,7 @@ type ShoppingItem = {
     price: number;
     quantity: string | null;
     shop_type: number;
+    recentPurchasedAt: string | null;
     item: {
         id: number;
         name: string;
@@ -52,6 +54,7 @@ type FrequentItem = {
 const ShoppingPage = () => {
   const [data, setData] = useState<ShoppingData | null>(null);
   const [activeTab, setActiveTab] = useState('list');
+  const [message, setMessage] = useState('');
 
   const fetchShoppingData = async () => {
       try {
@@ -94,21 +97,32 @@ const ShoppingPage = () => {
   return (
     <div className="max-w-md mx-auto">
         <div className="pb-32 p-4">
-          
+
+            {message && (
+                <div className="mb-4 rounded-2xl bg-green-50 px-4 py-3 text-sm font-bold text-green-600 dark:bg-green-500/10 dark:text-green-400">
+                    {message}
+                </div>
+            )}
             {/* クイックメニュー */}
             {activeTab === 'list' && (
                 <>
                     <QuickMenu
                         frequentItems={frequentItems}
                         items={data.items}
-                        onAdded={fetchShoppingData}
+                        onAdded={() => {
+                            fetchShoppingData();
+                            setMessage('買い物リストに追加しました。');
+                        }}
                     />
 
                     <div>
                         <ListSection
                             shopTypes={data.shopTypes}
                             items={data.items}
-                            onAdded={fetchShoppingData}
+                            onActionSuccess={(message) => {
+                                fetchShoppingData();
+                                setMessage(message);
+                            }}
                         />
                     </div>
                 </>

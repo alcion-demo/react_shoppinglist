@@ -21,31 +21,28 @@ const Login = ({ onLoginSuccess, onRegister }: LoginProps) => {
   const [error, setError] = useState('');
 
   //ログイン実行のイベントハンドラー
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     setError('');
+
     try {
-        await api.get('/sanctum/csrf-cookie');
+      await api.get('/sanctum/csrf-cookie');
 
-        // ログイン
-        const loginResponse = await api.post('/login', {
-          email,
-          password,
-        });
+      const loginResponse = await api.post('/login', {
+        email,
+        password,
+      });
 
-        console.log('login status:', loginResponse.status);
+      console.log('login status:', loginResponse.status);
 
-        //認証済みユーザー情報の取得
-        const userResponse = await api.get('/api/user');
+      const userResponse = await api.get('/api/user');
 
-        console.log('user status:', userResponse.status);
+      console.log('user status:', userResponse.status);
 
-        const user = await userResponse.data;
-
-        console.log('authenticated user:', user);
-
-        onLoginSuccess(user);
+      onLoginSuccess(userResponse.data);
     } catch (error) {
-        console.error('login error:', error);
+      console.error('login error:', error);
     }
   };
 
@@ -55,56 +52,60 @@ const Login = ({ onLoginSuccess, onRegister }: LoginProps) => {
         <h1 className="mb-6 text-2xl font-bold text-center">
           Login
         </h1>
-        <div className="space-y-2">
 
-          <div>
-            <div className="flex items-center gap-3">
-              <label className="min-w-[100px] shrink-0 text-left text-sm text-gray-700">
-                メールアドレス
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded border p-2"
-              />
+        <form onSubmit={handleLogin}>
+          <div className="space-y-2">
+
+            <div>
+              <div className="flex items-center gap-3">
+                <label className="min-w-[100px] shrink-0 text-left text-sm text-gray-700">
+                  メールアドレス
+                </label>
+
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded border p-2"
+                />
+              </div>
             </div>
+
+            <div>
+              <div className="flex items-center gap-3">
+                <label className="min-w-[100px] shrink-0 text-left text-sm text-gray-700">
+                  パスワード
+                </label>
+
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded border p-2"
+                />
+              </div>
+            </div>
+
           </div>
 
-          <div>
-            <div className="flex items-center gap-3">
-              <label className="min-w-[100px] shrink-0 text-left text-sm text-gray-700">
-                パスワード
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded border p-2"
-              />
-            </div>
+          {error && (
+            <p className="mb-4 text-red-500">
+              {error}
+            </p>
+          )}
+
+          <div className="mt-4">
+            <button
+              type="submit"
+              className="w-full rounded bg-blue-500 p-2 text-white"
+            >
+              Login
+            </button>
           </div>
-
-        </div>
-
-        {error && (
-          <p className="mb-4 text-red-500">
-            {error}
-          </p>
-        )}
-
-        <div className="mt-4">
-          <button
-            onClick={handleLogin}
-            className="w-full rounded bg-blue-500 p-2 text-white"
-          >
-            Login
-          </button>
-        </div>
-
+        </form>
         <button
+          type="button"
           onClick={onRegister}
-          className="mt-3 text-sm text-blue-500 hover:underline focus:outline-none"
         >
           新規登録
         </button>

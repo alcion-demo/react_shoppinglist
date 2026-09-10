@@ -24,10 +24,10 @@ type ShoppingItem = {
 type ListSectionProps = {
   shopTypes: ShopType[];
   items: ShoppingItem[];
-  onAdded: () => void;
+  onActionSuccess: (message: string) => void;
 };
 
-const ListSection = ({ shopTypes, items, onAdded }: ListSectionProps) => {
+const ListSection = ({ shopTypes, items, onActionSuccess  }: ListSectionProps) => {
   const [name, setName] = useState('');
   const [shopType, setShopType] = useState(shopTypes[0]?.value ?? '');
   const [price, setPrice] = useState('');
@@ -65,7 +65,7 @@ const ListSection = ({ shopTypes, items, onAdded }: ListSectionProps) => {
       setPrice('');
       setQuantity('');
 
-      onAdded();
+      onActionSuccess('買い物リストに追加しました。');
 
     } catch (error: any) {
       setError(
@@ -83,7 +83,7 @@ const ListSection = ({ shopTypes, items, onAdded }: ListSectionProps) => {
     try {
         await api.delete(`/api/shopping-items/${id}`);
 
-        onAdded();
+        onActionSuccess('買い物リストから削除しました。');
     } catch (error) {
         console.error('shopping item delete error:', error);
     }
@@ -93,7 +93,7 @@ const ListSection = ({ shopTypes, items, onAdded }: ListSectionProps) => {
       try {
           await api.post(`/api/shopping-items/${id}/purchase`);
 
-          onAdded();
+          onActionSuccess('購入済みにしました。');
       } catch (error) {
           console.error('shopping item purchase error:', error);
       }
@@ -212,7 +212,7 @@ const ListSection = ({ shopTypes, items, onAdded }: ListSectionProps) => {
                           item={item}
                           shopTypes={shopTypes}
                           onCancel={() => setEditingCartId(null)}
-                          onUpdated={onAdded}
+                          onUpdated={() => onActionSuccess('買い物リストを更新しました。')}
                       />
                   ) : (
                       <DisplayCard
