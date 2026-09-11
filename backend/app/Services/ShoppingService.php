@@ -5,10 +5,9 @@ namespace App\Services;
 
 use App\Models\ShoppingItem;
 use App\Models\PurchaseLog;
-// use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Http;
 use App\Enums\ShopType;
 use App\Models\CurrentCart;
-// use App\Ai\Agents\NoblemanAgent;
 use Carbon\Carbon;
 
 class ShoppingService
@@ -107,46 +106,38 @@ class ShoppingService
     }
 
     /**
-     * Gemini API連携: 献立提案
-     */
-    // public function getRecipeSuggestions(array $items)
-    // {
-    //     $ingredients = implode('、', array_map(fn($i) => $i['name'], $items));
-
-    //     // エージェントに依頼（JSON構造が自動適用される）
-    //     $response = $this->agent->ask("冷蔵庫に「{$ingredients}」があるのじゃ。献立を提案してほしい。");
-
-    //     return $response->object()->recipes ?? [];
-    // }
-
-    /**
      * 禁止ワード
      *
      * @param string $item
      * @return boolean
      */
-    // public function isInvalid(string $item): bool
-    // {
-    //     $allowWords = [
-    //         'もも',
-    //     ];
+    public function isInvalid(string $item): bool
+    {
+        $allowWords = [
+            'もも',
+        ];
 
-    //     if (in_array($item, $allowWords, true)) {
-    //         return false;
-    //     }
+        if (in_array($item, $allowWords, true)) {
+            return false;
+        }
 
-    //     // ひらがな1文字
-    //     if (preg_match('/^[ぁ-ん]$/u', $item)) {
-    //         return true;
-    //     }
+        // ひらがな1文字
+        if (preg_match('/^[ぁ-ん]$/u', $item)) {
+            return true;
+        }
 
-    //     // 同じひらがな2文字
-    //     if (preg_match('/^([ぁ-ん])\1$/u', $item)) {
-    //         return true;
-    //     }
+        // 同じひらがな2文字
+        if (preg_match('/^([ぁ-ん])\1$/u', $item)) {
+            return true;
+        }
 
-    //     return false;
-    // }
+        // 記号が含まれていたら不正
+        if (preg_match('/[\p{P}\p{S}]/u', $item)) {
+            return true;
+        }
+
+        return false;
+    }
 
 
     /**

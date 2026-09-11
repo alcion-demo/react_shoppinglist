@@ -19,6 +19,7 @@ const Login = ({ onLoginSuccess, onRegister }: LoginProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [remember, setRemember] = useState(false);
 
   //ログイン実行のイベントハンドラー
   const handleLogin = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -28,10 +29,10 @@ const Login = ({ onLoginSuccess, onRegister }: LoginProps) => {
 
     try {
       await api.get('/sanctum/csrf-cookie');
-
       const loginResponse = await api.post('/login', {
         email,
         password,
+        remember,
       });
 
       console.log('login status:', loginResponse.status);
@@ -47,7 +48,7 @@ const Login = ({ onLoginSuccess, onRegister }: LoginProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 px-4 flex items-center px-4">
+    <div className="min-h-screen bg-slate-900 px-4 flex items-center justify-center px-4">
       <div className="w-full max-w-md rounded-lg border border-slate-700 bg-slate-800 p-6 shadow">
         <h1 className="mb-6 text-2xl font-bold text-center text-slate-200">
           Login
@@ -85,6 +86,17 @@ const Login = ({ onLoginSuccess, onRegister }: LoginProps) => {
               </div>
             </div>
 
+            <div>
+              <label className="mt-4 flex items-center gap-2 text-sm text-slate-200">
+                <input
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                />
+                ログイン状態を保持する
+              </label>
+            </div>
+
           </div>
 
           {error && (
@@ -108,7 +120,7 @@ const Login = ({ onLoginSuccess, onRegister }: LoginProps) => {
             onClick={onRegister}
           >
             新規登録
-        </button>
+          </button>
         </div>
       </div>
     </div>

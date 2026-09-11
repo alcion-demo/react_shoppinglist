@@ -6,6 +6,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use App\Services\RecipeGenerator;
 use Illuminate\Support\Facades\Cache;
+use App\Services\RecipeShareService;
 
 class GenerateRecipeJob implements ShouldQueue
 {
@@ -30,7 +31,7 @@ class GenerateRecipeJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(RecipeGenerator $generator): void
+    public function handle(RecipeGenerator $generator, RecipeShareService $shareService): void
     {
         try {
             $data = $generator->generate(
@@ -47,9 +48,15 @@ class GenerateRecipeJob implements ShouldQueue
                 return;
             }
 
+            $recipes = array_map(function (array $recipe) use ($shareService) {
+                $recipe['share_url'] = $shareService->encode($recipe);
+
+                return $recipe;
+            }, $data['recipes']);
+
             Cache::put("recipe_{$this->jobId}", [
                 'status' => 'completed',
-                'recipes' => $data['recipes'] ?? []
+                'recipes' => $recipes
             ], now()->addMinutes(10));
 
         } catch (\Exception $e) {
@@ -67,6 +74,12 @@ class GenerateRecipeJob implements ShouldQueue
                 str_contains($msg, '429')
             ) {
                 $errorMessage = '無料枠制限でおじゃる';
+            } elseif (
+                str_contains($msg, 'ProviderOverloadedException') ||
+                str_contains($msg, 'provider is overloaded') ||
+                str_contains($msg, '503')
+            ) {
+                $errorMessage = 'AIが混み合っておるようじゃ…少し待ってから試してたもれ';
             } elseif (str_contains($msg, 'timeout')) {
                 $errorMessage = '思考に時間がかかりすぎたのじゃ…もう一度試してたもれ';
             } elseif (str_contains($msg, 'schema')) {

@@ -6,18 +6,18 @@ type RegisterProps = {
   onBackToLogin: () => void;
 };
 
-  const Register = ({ onRegisterSuccess, onBackToLogin }: RegisterProps) => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordConfirmation, setPasswordConfirmation] = useState('');
-    const [errors, setErrors] = useState<any>({});
+const Register = ({ onRegisterSuccess, onBackToLogin }: RegisterProps) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
+  const [errors, setErrors] = useState<any>({});
 
   const handleRegister = async (
     e: React.SubmitEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
-console.log('REGISTER SUBMIT');
+    console.log('REGISTER SUBMIT');
     setErrors({});
 
     try {
@@ -34,8 +34,8 @@ console.log('REGISTER SUBMIT');
 
       const userResponse = await api.get('/api/user');
 
-console.log('register user status:', userResponse.status);
-console.log('registered user:', userResponse.data);
+      console.log('register user status:', userResponse.status);
+      console.log('registered user:', userResponse.data);
 
       onRegisterSuccess(userResponse.data);
 
