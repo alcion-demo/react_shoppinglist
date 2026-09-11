@@ -24,7 +24,7 @@ type ShoppingItem = {
 type ListSectionProps = {
   shopTypes: ShopType[];
   items: ShoppingItem[];
-  onActionSuccess: (message: string) => void;
+  onActionSuccess: () => void;
 };
 
 const ListSection = ({ shopTypes, items, onActionSuccess  }: ListSectionProps) => {
@@ -36,11 +36,13 @@ const ListSection = ({ shopTypes, items, onActionSuccess  }: ListSectionProps) =
   const [editingCartId, setEditingCartId] = useState<number | null>(null);
 
   const [isFormActive, setIsFormActive] = useState(false);
+  const [message, setMessage] = useState('');
 
   const handleAdd = async (event: any) => {
     event.preventDefault();
     setIsFormActive(true);
     setError('');
+    setMessage(''); 
 
       console.log({
         name: name,
@@ -65,9 +67,11 @@ const ListSection = ({ shopTypes, items, onActionSuccess  }: ListSectionProps) =
       setPrice('');
       setQuantity('');
 
-      onActionSuccess('買い物リストに追加しました。');
+      setMessage('✨ リストに追加しました。');
+      onActionSuccess();
 
     } catch (error: any) {
+      console.error('shopping item add error:', error);
       setError(
           error.response?.data?.message ??
           '商品の追加に失敗しました'
@@ -83,7 +87,8 @@ const ListSection = ({ shopTypes, items, onActionSuccess  }: ListSectionProps) =
     try {
         await api.delete(`/api/shopping-items/${id}`);
 
-        onActionSuccess('買い物リストから削除しました。');
+        setMessage('🗑️ リストから削除しました。');
+        onActionSuccess();
     } catch (error) {
         console.error('shopping item delete error:', error);
     }
@@ -93,7 +98,8 @@ const ListSection = ({ shopTypes, items, onActionSuccess  }: ListSectionProps) =
       try {
           await api.post(`/api/shopping-items/${id}/purchase`);
 
-          onActionSuccess('購入済みにしました。');
+          setMessage('✓ 購入済みにしました。');
+          onActionSuccess();
       } catch (error) {
           console.error('shopping item purchase error:', error);
       }
@@ -101,17 +107,6 @@ const ListSection = ({ shopTypes, items, onActionSuccess  }: ListSectionProps) =
 
   return (
     <section className="space-y-6">
-
-      {/* クイック追加エリア */}
-      <div className="mb-6">
-          <h3 className="text-xs font-bold text-gray-500 px-2 uppercase tracking-wider mb-2">
-              よく買うもの
-          </h3>
-
-          <div className="grid grid-cols-3 gap-2">
-              {/* ここは後でLaravelから受け取る frequentItems を map する */}
-          </div>
-      </div>
 
       {/* メインの追加フォーム */}
       <div className="bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-sm border dark:border-gray-700">
@@ -124,7 +119,7 @@ const ListSection = ({ shopTypes, items, onActionSuccess  }: ListSectionProps) =
                     type="text"
                     value={name}
                     onChange={(event) => setName(event.target.value)}
-                    className="flex-1 rounded-lg border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white"
+                    className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-black placeholder:text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-400"
                     placeholder="何を買う？"
                 />
 
@@ -140,7 +135,7 @@ const ListSection = ({ shopTypes, items, onActionSuccess  }: ListSectionProps) =
               <select
                   value={shopType}
                   onChange={(event) => setShopType(Number(event.target.value))}
-                  className="flex-1 rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-sm"
+                  className="flex-1 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-sm"
               >
                   {shopTypes.map((shopType) => (
                       <option
@@ -157,7 +152,7 @@ const ListSection = ({ shopTypes, items, onActionSuccess  }: ListSectionProps) =
                   min="0"
                   value={price}
                   onChange={(event) => setPrice(event.target.value)}
-                  className="w-28 rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-sm"
+                  className="w-28 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-sm"
                   placeholder="単価"
               />
 
@@ -165,7 +160,7 @@ const ListSection = ({ shopTypes, items, onActionSuccess  }: ListSectionProps) =
                   type="text"
                   value={quantity}
                   onChange={(event) => setQuantity(event.target.value)}
-                  className="w-16 rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-sm"
+                  className="w-16 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-sm"
                   placeholder="個"
               />
 
@@ -187,7 +182,11 @@ const ListSection = ({ shopTypes, items, onActionSuccess  }: ListSectionProps) =
                   キャンセル
               </button>
           )}
-
+          {message && (
+              <div className="rounded-lg bg-green-500/10 px-3 py-2 text-sm font-bold text-green-400">
+                  {message}
+              </div>
+          )}
           {error && (
               <p className="text-sm text-red-500">
                   {error}
@@ -212,7 +211,10 @@ const ListSection = ({ shopTypes, items, onActionSuccess  }: ListSectionProps) =
                           item={item}
                           shopTypes={shopTypes}
                           onCancel={() => setEditingCartId(null)}
-                          onUpdated={() => onActionSuccess('買い物リストを更新しました。')}
+                          onUpdated={() => {
+                              setMessage('✏️ 買い物リストを更新しました。');
+                              onActionSuccess();
+                          }}
                       />
                   ) : (
                       <DisplayCard

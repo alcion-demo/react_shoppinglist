@@ -24,7 +24,7 @@ const UserItem = ({
   onEdit,
 }: UserItemProps) => {
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-3xl p-5 shadow-sm border border-slate-200/60 dark:border-white/5 transition-all">
+    <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-200/60 dark:border-white/5 transition-all">
 
       {/* ユーザー情報 */}
       <div className="flex items-start justify-between mb-4">

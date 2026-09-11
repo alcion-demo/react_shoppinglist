@@ -47,18 +47,17 @@ const Login = ({ onLoginSuccess, onRegister }: LoginProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-md rounded-lg p-6 shadow">
-        <h1 className="mb-6 text-2xl font-bold text-center">
+    <div className="min-h-screen bg-slate-900 px-4 flex items-center px-4">
+      <div className="w-full max-w-md rounded-lg border border-slate-700 bg-slate-800 p-6 shadow">
+        <h1 className="mb-6 text-2xl font-bold text-center text-slate-200">
           Login
         </h1>
 
         <form onSubmit={handleLogin}>
           <div className="space-y-2">
-
             <div>
               <div className="flex items-center gap-3">
-                <label className="min-w-[100px] shrink-0 text-left text-sm text-gray-700">
+                <label className="min-w-[100px] shrink-0 text-left text-sm text-slate-200">
                   メールアドレス
                 </label>
 
@@ -66,14 +65,14 @@ const Login = ({ onLoginSuccess, onRegister }: LoginProps) => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded border p-2"
+                  className="w-full rounded border border-slate-600 bg-slate-700 p-2 text-white"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center gap-3">
-                <label className="min-w-[100px] shrink-0 text-left text-sm text-gray-700">
+                <label className="min-w-[100px] shrink-0 text-left text-sm text-slate-200">
                   パスワード
                 </label>
 
@@ -81,7 +80,7 @@ const Login = ({ onLoginSuccess, onRegister }: LoginProps) => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded border p-2"
+                  className="w-full rounded border border-slate-600 bg-slate-700 p-2 text-white"
                 />
               </div>
             </div>
@@ -103,12 +102,14 @@ const Login = ({ onLoginSuccess, onRegister }: LoginProps) => {
             </button>
           </div>
         </form>
-        <button
-          type="button"
-          onClick={onRegister}
-        >
-          新規登録
+        <div className="mt-4 text-center text-slate-200">
+          <button
+            type="button"
+            onClick={onRegister}
+          >
+            新規登録
         </button>
+        </div>
       </div>
     </div>
   );

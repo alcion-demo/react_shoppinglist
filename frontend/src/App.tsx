@@ -50,16 +50,12 @@ const App = () => {
 
   // 登録成功
   const handleRegisterSuccess = (userData: User) => {
-  console.log('★★ App側に届いた ★★', userData);
-
     setUser(userData);
     setIsLoggedIn(true);
   };
 
   // ログアウト
   const logout = async () => {
-    console.log('ログアウトボタン押した');
-
     try {
       const response = await api.post('/api/logout');
 

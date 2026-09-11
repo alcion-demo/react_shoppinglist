@@ -113,7 +113,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
           <header className="px-4 py-6">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h1 className="text-xl font-black text-slate-950 dark:text-white tracking-tighter uppercase">
+                <h1 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
                   設定
                 </h1>
               </div>

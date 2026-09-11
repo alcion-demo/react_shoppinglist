@@ -101,7 +101,7 @@ npm install axios
 npm list axios
 ```
 
-#### 8. 認証の設定
+#### 9. 認証の設定(バックエンド)
 ※下記で、`config/core.php`
 ```
 php artisan config:publish cors
@@ -110,6 +110,18 @@ php artisan config:publish cors
     'allowed_origins' => ['http://localhost:5173'],
     'supports_credentials' => true,
 ```
+
+#### 10. AI SDK の導入(バックエンド)
+```
+composer require laravel/ai
+php artisan vendor:publish --provider="Laravel\Ai\AiServiceProvider"
+php artisan migrate
+php artisan make:agent NoblemanAgent --structured
+```
+※Gemini無料枠使用、`.env` ファイルを編集して、データベース接続情報と AI API キーを設定してください。  
+※`config/ai.php`にて'default'の値も使用するAIに変更してください。
+
+
 ## ディレクトリ構成（主要部分）
 - compose.yaml
 - php

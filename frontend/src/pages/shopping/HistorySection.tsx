@@ -131,7 +131,8 @@ const HistorySection = ({ history }: HistorySectionProps) => {
                                           key={log.id}
                                           className="flex justify-between items-center p-4 border-b last:border-none dark:border-gray-700/50"
                                       >
-                                          <div className="flex flex-col">
+
+                                          <div className="flex flex-col items-start text-left">
                                               <span className="text-sm font-medium">
                                                   {log.item.name}
                                               </span>
