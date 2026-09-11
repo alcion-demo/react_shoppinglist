@@ -24,72 +24,72 @@ const SettingsPage = ({ user, onCancel, onDeleted }: SettingsPageProps) => {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [isDeleted, setIsDeleted] = useState(false);
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  setMessage('');
-  setErrors({});
+    setMessage('');
+    setErrors({});
 
-  let newErrors: Record<string, string[]> = {};
+    let newErrors: Record<string, string[]> = {};
 
-  // プロフィール更新
-  try {
-    const response = await api.put('/api/profile', {
-      name,
-      email,
-    });
-
-    setMessage(response.data.message);
-  } catch (error: any) {
-    if (error.response?.status === 422) {
-      newErrors = {
-        ...newErrors,
-        ...(error.response.data.errors ?? {}),
-      };
-    } else {
-      setMessage('プロフィールの更新に失敗しました。');
-    }
-  }
-
-  // パスワード変更
-  if (currentPassword || password || passwordConfirmation) {
+    // プロフィール更新
     try {
-      const passwordResponse = await api.put('/api/profile/password', {
-        current_password: currentPassword,
-        password,
-        password_confirmation: passwordConfirmation,
+      const response = await api.put('/api/profile', {
+        name,
+        email,
       });
 
-      setMessage(passwordResponse.data.message);
+      setMessage(response.data.message);
     } catch (error: any) {
       if (error.response?.status === 422) {
         newErrors = {
-          //今まで入ってるエラーを残したまま、新しいエラーを追加する
           ...newErrors,
           ...(error.response.data.errors ?? {}),
         };
       } else {
-        setMessage('パスワードの変更に失敗しました。');
+        setMessage('プロフィールの更新に失敗しました。');
       }
     }
-  }
 
-  setErrors(newErrors);
-};
+    // パスワード変更
+    if (currentPassword || password || passwordConfirmation) {
+      try {
+        const passwordResponse = await api.put('/api/profile/password', {
+          current_password: currentPassword,
+          password,
+          password_confirmation: passwordConfirmation,
+        });
+
+        setMessage(passwordResponse.data.message);
+      } catch (error: any) {
+        if (error.response?.status === 422) {
+          newErrors = {
+            //今まで入ってるエラーを残したまま、新しいエラーを追加する
+            ...newErrors,
+            ...(error.response.data.errors ?? {}),
+          };
+        } else {
+          setMessage('パスワードの変更に失敗しました。');
+        }
+      }
+    }
+
+    setErrors(newErrors);
+  };
 
   const handleDelete = async () => {
-  try {
-    await api.delete('/api/profile');
-    setIsDeleted(true);
+    try {
+      await api.delete('/api/profile');
+      setIsDeleted(true);
 
-    setTimeout(() => {
-      onDeleted();
-    }, 2000);
+      setTimeout(() => {
+        onDeleted();
+      }, 2000);
 
-  } catch (error: any) {
-    console.error('delete error:', error.response?.data);
-    console.error('status:', error.response?.status);
-  }
+    } catch (error: any) {
+      console.error('delete error:', error.response?.data);
+      console.error('status:', error.response?.status);
+    }
   };
 
   return (
@@ -139,7 +139,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               </button>
             </div>
           </header>
-          
+
           {message && (
             <div className="mx-4 mb-4 rounded-2xl bg-green-50 px-4 py-3 text-sm font-bold text-green-600 dark:bg-green-500/10 dark:text-green-400">
               {message}

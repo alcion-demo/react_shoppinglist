@@ -7,6 +7,7 @@ import api from './utils/axios';
 import ShoppingPage from './pages/shopping/ShoppingPage';
 import AdminUserPage from './pages/Admin/AdminUserPage';
 import SettingsPage from './pages/Settings/SettingsPage';
+import RecipeSharePage from './pages/shopping/recipe/RecipeSharePage';
 
 type User = {
   id: number;
@@ -61,6 +62,10 @@ const App = () => {
 
       console.log('logout response:', response.status);
 
+      // ログアウト時に献立関連の保存データを削除
+      sessionStorage.removeItem('latest_recipes');
+      sessionStorage.removeItem('recipe_job_id');
+
       setUser(null);
       setIsLoggedIn(false);
     } catch (error) {
@@ -71,6 +76,12 @@ const App = () => {
   // 読み込み中
   if (isLoggedIn === null) {
     return <div>Loading...</div>;
+  }
+
+  const path = window.location.pathname;
+
+  if (path.startsWith('/recipes/share/')) {
+      return <RecipeSharePage />;
   }
 
   // 未ログイン

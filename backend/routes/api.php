@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Shopping\ShoppingController;
 use App\Http\Controllers\Admin\AdminUserController;
 Use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Shopping\RecipeController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -27,13 +29,23 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ログアウト
     Route::post('/logout', function (Request $request) {
-        $request->session()->invalidate();
+    Auth::guard('web')->logout();
+    $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return response()->json([
             'message' => 'Logged out',
         ]);
     });
+
+    //AI献立
+    Route::post('/recipes', [RecipeController::class, 'store']);
+    Route::get('/recipes/{jobId}', [RecipeController::class, 'show']);
+
+    //献立共有
+    Route::get('/recipes/share/{data}', [RecipeController::class, 'shared'])
+        ->name('shopping.share');
+
 });
 
 Route::apiResource('users', AdminUserController::class)

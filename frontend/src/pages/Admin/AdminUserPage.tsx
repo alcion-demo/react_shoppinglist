@@ -98,31 +98,31 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
   ) => {
     setErrors({});
 
-  try {
-    const response = await api.post('/api/admin/users', {
-      name,
-      email,
-      password,
-      password_confirmation: passwordConfirmation,
-      is_admin: isAdmin,
-    });
+    try {
+      const response = await api.post('/api/admin/users', {
+        name,
+        email,
+        password,
+        password_confirmation: passwordConfirmation,
+        is_admin: isAdmin,
+      });
 
-    console.log('create user:', response.status, response.data);
+      console.log('create user:', response.status, response.data);
 
-    // 登録成功したら一覧を再取得
-    await fetchUsers();
+      // 登録成功したら一覧を再取得
+      await fetchUsers();
 
-    // フォームを閉じる
-    setShowForm(false);
+      // フォームを閉じる
+      setShowForm(false);
 
-  } catch (error: any) {
-    console.error('create user error:', error);
+    } catch (error: any) {
+      console.error('create user error:', error);
 
-    if (error.response?.status === 422) {
-      setErrors(error.response.data.errors ?? {});
+      if (error.response?.status === 422) {
+        setErrors(error.response.data.errors ?? {});
+      }
     }
-  }
-};
+  };
 
   return (
     <div className="max-w-md mx-auto px-4 pb-32">
@@ -212,8 +212,8 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
               setErrors({});
               setShowForm(true);
             }}
-              className="mb-4 flex w-full items-center justify-between rounded-2xl border border-blue-500/30 bg-white p-3 shadow-sm transition-all active:scale-[0.98] dark:bg-slate-800"
-            >
+            className="mb-4 flex w-full items-center justify-between rounded-2xl border border-blue-500/30 bg-white p-3 shadow-sm transition-all active:scale-[0.98] dark:bg-slate-800"
+          >
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md">
                 <svg

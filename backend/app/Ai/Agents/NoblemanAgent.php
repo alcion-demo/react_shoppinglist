@@ -12,6 +12,7 @@ use Laravel\Ai\Messages\Message;
 use Laravel\Ai\Promptable;
 use Laravel\Ai\Providers\Tools\ProviderTool;
 use Stringable;
+use Laravel\Ai\Attributes\Model;
 
 #[Model('gemini-2.5-flash')]
 class NoblemanAgent implements Agent, Conversational, HasStructuredOutput, HasTools

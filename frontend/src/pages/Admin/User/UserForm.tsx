@@ -9,9 +9,9 @@ type UserFormProps = {
     isAdmin: boolean
   ) => Promise<void>;
 
-errors: Record<string, string[]>;
+  errors: Record<string, string[]>;
   clearErrors: () => void;
-    onCancel: () => void;
+  onCancel: () => void;
 };
 
 const UserForm = ({
