@@ -12,7 +12,8 @@ type UserEditFormProps = {
   updateUser: (
     id: number,
     name: string,
-    email: string
+    email: string,
+    isAdmin: boolean
   ) => Promise<Record<string, string[]>>;
   onCancel: () => void;
 };
@@ -35,7 +36,8 @@ const UserEditForm = ({
     const result = await updateUser(
       user.id,
       name,
-      email
+      email,
+      isAdmin
     );
 
     if (Object.keys(result).length > 0) {

@@ -1,6 +1,6 @@
 type Recipe = {
   name: string;
-  share_url: string;
+  share_url?: string;
   missing_ingredients: string[];
   ingredients: string[];
   amount: string;
@@ -111,6 +111,7 @@ const RecipeCard = ({ recipe }: RecipeCardProps) => {
         <button
           type="button"
           onClick={() => {
+            if (!recipe.share_url) return;
             const data = recipe.share_url.split('/').pop();
 
             if (data) {

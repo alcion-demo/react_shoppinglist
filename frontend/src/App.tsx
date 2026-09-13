@@ -22,7 +22,7 @@ const App = () => {
   const [user, setUser] = useState<User | null>(null);
 
   const [currentPage, setCurrentPage] = useState<
-  'shopping' | 'adminUsers' | 'settings'
+    'shopping' | 'adminUsers' | 'settings'
   >('shopping');
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const App = () => {
   const path = window.location.pathname;
 
   if (path.startsWith('/recipes/share/')) {
-      return <RecipeSharePage />;
+    return <RecipeSharePage />;
   }
 
   // 未ログイン

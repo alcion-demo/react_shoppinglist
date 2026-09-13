@@ -1,23 +1,34 @@
-# Reactの買い物リスト  
+# Reactの買い物メモ+AI献立提案  
 
 <img alt="Static Badge" src="https://img.shields.io/badge/wsl2-w?style=plastic&logo=linux&logoColor=000000&labelColor=%23FCC624&color=%23FCC624"> <img alt="Static Badge" src="https://img.shields.io/badge/ubuntu-u?style=plastic&logo=ubuntu&logoColor=%23ffffff&labelColor=%23E95420&color=%23E95420"> <img alt="Static Badge" src="https://img.shields.io/badge/alpine-l?style=plastic&logo=alpinelinux&logoColor=%23ffffff&labelColor=%230D597F&color=%230D597F">
 <img alt="Static Badge" src="https://img.shields.io/badge/Docker-d?style=plastic&logo=docker&logoColor=%23ffffff&labelColor=%232496ED&color=%232496ED">  
 <img alt="Static Badge" src="https://img.shields.io/badge/NGINX-n?style=plastic&logo=nginx&logoColor=%23ffffff">
 <img alt="Static Badge" src="https://img.shields.io/badge/MySQL-m?style=plastic&logo=mysql&logoColor=%23ffffff&labelColor=%234479A1&color=%234479A1">
-<img alt="Static Badge" src="https://img.shields.io/badge/Laravel13-l?style=plastic&logo=laravel&logoColor=%23ffffff&labelColor=%23FF2D20&color=%23FF2D20">  
-<img alt="Static Badge" src="https://img.shields.io/badge/php-p?style=plastic&logo=php&logoColor=%23ffffff&labelColor=%23777BB4&color=%23777BB4">
+<img alt="Static Badge" src="https://img.shields.io/badge/Laravel13-l?style=plastic&logo=laravel&logoColor=%23ffffff&labelColor=%23FF2D20&color=%23FF2D20">
+<img alt="Static Badge" src="https://img.shields.io/badge/php-p?style=plastic&logo=php&logoColor=%23ffffff&labelColor=%23777BB4&color=%23777BB4">  
 <img alt="Static Badge" src="https://img.shields.io/badge/React-%20?style=plastic&logo=react&logoColor=%23000000&labelColor=%2361DAFB&color=%2361DAFB">
-<img alt="Static Badge" src="https://img.shields.io/badge/TypeScript-%20?style=plastic&logo=typescript&logoColor=%233178C6&labelColor=%23ffffff&color=%23ffffff">  
+<img alt="Static Badge" src="https://img.shields.io/badge/TypeScript-%20?style=plastic&logo=typescript&logoColor=%233178C6&labelColor=%23ffffff&color=%23ffffff">
+<img alt="Static Badge" src="https://img.shields.io/badge/Google%20Gemini-%20?style=plastic&logo=googlegemini&logoColor=%23ffffff&color=%238E75B2">  
 <img alt="Static Badge" src="https://img.shields.io/badge/tailwind-%20?style=plastic&logo=tailwindcss&logoColor=ffffff&color=%2306B6D4">
 <img alt="Static Badge" src="https://img.shields.io/badge/vite-v?style=plastic&logo=vite&logoColor=%23ffffff&labelColor=%23646CFF&color=%23646CFF">
 <img alt="Static Badge" src="https://img.shields.io/badge/npm-n?style=plastic&logo=npm&logoColor=%23ffffff&labelColor=%23CB3837&color=%23CB3837">  
 
 ## プロジェクト概要
-- Laravel 13ベースのバックエンドと、React + TypeScript + Vite のフロントエンドを含む構成。
-- backend 側は Laravel アプリケーション、frontend 側は React SPA。
-- Docker Compose で `app` / nginx / `node` / `db(mysql)` / `phpmyadmin` を起動する構成。
+このリポジトリは、バックエンドに Laravel、フロントエンドに React + TypeScript + Vite を持つ SPA 型の買い物支援アプリケーションです。
+
+確認できた実装の軸は次の通りです。
+
+- Backend: Laravel 13 を使用した API と認証基盤
+- Frontend: React 19 + TypeScript + Vite によるシングルページアプリケーション
+- 購入リストと購入履歴の管理
+- 管理者向けユーザー管理
+- AI を利用した献立候補生成と共有
+- Docker Compose による開発環境の定義
+- PWA対応
 - 以前実装したLivewire版買い物リストをReactへ移植。
-- 管理者ユーザー管理機能
+
+実際に確認できたファイル上では、フロントエンドのメイン画面は `App.tsx` で認証状態やパスに応じてログイン画面、買い物画面、管理者画面、設定画面を切り替えています。
+
 
 ## 学習・検証目的
 - CRUD + API通信の理解
@@ -28,18 +39,31 @@
 
 ## 主な機能
 - CRUD + API通信
-  - `TodoController` にて `index`, `store`, `update`, `destroy` を実装
+  - `ShoppingController` にて `index`, `store`, `update`, `destroy` を実装
   - `AdminController` にて 管理者向けユーザー管理 API（一覧・作成・更新・削除）
 - 認証フロー
   - ユーザー認証（Fortify）
   - API 認証（Sanctum ミドルウェア適用）
 - フロントエンド骨格（React + TypeScript + Vite + Tailwind）
+- 管理者チェック用ミドルウェア
+  - ユーザー一覧取得
+  - ユーザー追加
+  - ユーザー更新
+  - ユーザー削除
+- AI を利用した献立候補生成と共有
+  - 食材入力の検証
+  - 献立生成ジョブのキュー投入
+  - Job 実行中の状態管理（Cache を使用）
+  - AI エージェントによる構造化出力
+  - 生成結果の共有 URL 作成
+  - 共有 URL からのレシピ復元
 
 ## 使用技術
 | カテゴリ | 使用技術 |
 | :--- | :--- |
 | **Backend** | Laravel 13 |
 | **Frontend** | React `^19.2.7`, Tailwind CSS, Node.js |
+| **AI** |Laravel AI / Gemini（AI SDK） |
 | **Authentication / Authorization** | Fortify |
 | **Infrastructure** | Docker Compose (App / Node / MySQL / Nginx) |
 | **OS Environment** | WSL2 (Ubuntu / Alpine Linux) |
@@ -140,12 +164,48 @@ php artisan make:agent NoblemanAgent --structured
     - `Http/`
       - `Controllers/`
         - Controller.php
-        - `Api/TodoController.php`
+        - `Shopping/`
+          - ShoppingController.php
+          - RecipeController.php
+        - `User/`
+          - UserController.php
+        - `Admin/`
+          - AdminUserController.php
+      - `Middleware/`
+        - Admin.php
+      - `Requests/`
+        - StoreShoppingRequest.php
+        - UpdateShoppingRequest.php
+        - SuggestionRequest.php
+        - UpdateProfileRequest.php
+        - UpdatePasswordRequest.php
     - `Models/`
-      - Todo.php
       - User.php
+      - ShoppingItem.php
+      - CurrentCart.php
+      - PurchaseLog.php
+    - `Services/`
+      - ShoppingService.php
+      - RecipeGenerator.php
+      - RecipeShareService.php
+      - UserService.php
+    - `Jobs/`
+      - GenerateRecipeJob.php
+    - `Ai/`
+      - `Agents/`
+        - NoblemanAgent.php
     - `Providers/`
       - AppServiceProvider.php
+      - FortifyServiceProvider.php
+    - `Actions/`
+      - `Fortify/`
+        - CreateNewUser.php
+        - UpdateUserPassword.php
+        - ResetUserPassword.php
+        - UpdateUserProfileInformation.php
+        - PasswordValidationRules.php
+    - `Enums/`
+      - ShopType.php
   - `resources/`
     - `views/`
       - welcome.blade.php
@@ -156,31 +216,46 @@ php artisan make:agent NoblemanAgent --structured
   - README.md
   - `src/`
     - `components/`
-     - `Layout/`
-      - AppLayout.tsx
-     - `Todo/`
-      - TodoForm.tsx
-      - TodoItem.tsx
-      - TodoList.tsx
-     - `User/`
-      - UserForm.tsx
-      - UserItem.tsx
-    - `Types/`
-      - Todo.ts
+      - `Layout/`
+        - AppLayout.tsx
+      - `Header.tsx`
+      - `BottomNav.tsx`
+      - `ApplicationLogo.tsx`
+    - `pages/`
+      - `shopping/`
+        - ShoppingPage.tsx
+        - ListSection.tsx
+        - EditForm.tsx
+        - HistorySection.tsx
+        - `recipe/`
+          - RecipeSection.tsx
+          - RecipeCard.tsx
+          - RecipeSharePage.tsx
+      - `Admin/`
+        - `User/`
+          - UserForm.tsx
+          - UserItem.tsx
+          - UserEditForm.tsx
+        - AdminUserPage.tsx
+      - `Settings/`
+        - SettingsPage.tsx
     - `utils/`
-      - apiFetch.ts
+      - axios.ts
     - App.tsx
     - `main.tsx`
-    - `App.css`
     - `login.tsx`
     - `Register.tsx`
   - `public/`
 
-## 設計・実装の特徴
-- `Route::apiResource('todos', TodoController::class)->only([...])` で Todo API を RESTful に定義
-- `TodoController` はコンストラクタプロパティプロモーションで `Todo` モデルを注入
-- `index()` は `JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE` 付きの JSON レスポンス
-- `App\Models\User` は PHP 8 の属性ベースで `Fillable` / `Hidden` を定義し、`password` を `hashed` にキャスト
+## 設計・実装の特徴設計・実装の特徴
+- バックエンドはサービス層とモデル層に分離
+  - ShoppingService
+  - UserService
+  - RecipeGenerator
+  - RecipeShareService
+- モデルでスコープとキャストを定義
+- AI 献立生成はジョブ化
+- フロントエンドは状態管理を React の useState / useEffect で実施
 - フロントエンドは React Hooks でシンプルに API 連携し、CRUD 操作を実装
 
 ---
@@ -188,59 +263,150 @@ php artisan make:agent NoblemanAgent --structured
 ## 処理の流れ
 ```mermaid
 graph TD
-  Client[Front-end React/Vite] -->|HTTP S| API[API Laravel + Sanctum]
-  API -->|routes/api.php| TodoController[TodoController]
-  API -->|routes/api.php| AdminController[AdminController]
-  TodoController -->|uses| TodoModel["App\Models\Todo"]
-  AdminController -->|uses| UserModel["App\Models\User"]
-  TodoModel --> DB[(Database: MySQL)]
-  UserModel --> DB
-  API -->|auth| Fortify[Fortify / Sanctum]
+    A[React Frontend] -->|ログイン/登録/API呼び出し| B[Axios]
+    B --> C[Laravel API Routes]
+    C --> D[ShoppingController]
+    C --> E[AdminUserController]
+    C --> F[UserController]
+    C --> G[RecipeController]
+
+    D --> H[ShoppingService]
+    H --> I[CurrentCart]
+    H --> J[PurchaseLog]
+    H --> K[ShoppingItem]
+
+    E --> L[UserService]
+    L --> M[User]
+
+    G --> N[GenerateRecipeJob]
+    N --> O[RecipeGenerator]
+    O --> P[NoblemanAgent]
+    P --> Q[AI Provider]
+    N --> R[Cache]
+
+    C --> S[Fortify + Sanctum]
+    S --> T[User Auth]
+
+    I --> U[(MySQL / SQLite depending on env)]
+    J --> U
+    M --> U
 ```
 ## クラス構成図
 ```mermaid
 classDiagram
-  class User {
-    +id
-    +name
-    +email
-    +todos()
-  }
-  class Todo {
-    +id
-    +user_id
-    +title
-    +user()
-    +storeTodoList(userId, title)
-  }
-  class TodoController {
-    +index(Request)
-    +store(StoreTodo)
-    +update(UpdateTodo, id)
-    +destroy(id)
-  }
-  class AdminController {
-    +index()
-    +store(StoreUserRequest)
-    +update(UpdateUserRequest, User)
-    +destroy(User)
-  }
-  class FortifyActions {
-    +CreateNewUser
-    +UpdateUserPassword
-    +ResetUserPassword
-    +UpdateUserProfileInformation
-  }
+    class User {
+        +id
+        +name
+        +email
+        +password
+        +is_admin
+        +casts()
+    }
 
-  User "1" -- "*" Todo
-  TodoController ..> Todo : uses
-  AdminController ..> User : uses
-  FortifyActions ..> User : manage
+    class ShoppingItem {
+        +id
+        +user_id
+        +name
+        +is_active
+        +recentPurchaseLogs()
+        +scopeActive()
+        +scopeForUser()
+    }
+
+    class CurrentCart {
+        +id
+        +shopping_item_id
+        +price
+        +quantity
+        +shop_type
+        +item()
+        +scopeForUser()
+    }
+
+    class PurchaseLog {
+        +id
+        +shopping_item_id
+        +price
+        +quantity
+        +shop_type
+        +purchased_at
+        +item()
+        +scopeForUser()
+        +getPurchasedDateStringAttribute()
+        +getFrequentItems()
+        +getRecentPurchaseIn3Days()
+    }
+
+    class ShoppingController {
+        +index()
+        +store()
+        +update()
+        +destroy()
+        +purchase()
+    }
+
+    class AdminUserController {
+        +index()
+        +store()
+        +update()
+        +destroy()
+    }
+
+    class UserController {
+        +update()
+        +destroy()
+        +updatePassword()
+    }
+
+    class RecipeController {
+        +store()
+        +show()
+        +shared()
+    }
+
+    class ShoppingService {
+        +savePurchase()
+        +recordPurchase()
+        +deleteCart()
+        +isInvalid()
+        +getRecentPurchasedAt()
+        +updateCart()
+    }
+
+    class UserService {
+        +createUser()
+        +userList()
+    }
+
+    class RecipeGenerator {
+        +generate()
+    }
+
+    class NoblemanAgent {
+        +instructions()
+        +messages()
+        +tools()
+        +schema()
+    }
+
+    class GenerateRecipeJob {
+        +handle()
+    }
+
+    class RecipeShareService {
+        +encode()
+        +decode()
+    }
+
+    User --> ShoppingItem
+    ShoppingItem --> CurrentCart
+    ShoppingItem --> PurchaseLog
+    ShoppingController --> ShoppingService
+    AdminUserController --> UserService
+    RecipeController --> ShoppingService
+    RecipeController --> RecipeShareService
+    GenerateRecipeJob --> RecipeGenerator
+    RecipeGenerator --> NoblemanAgent
 ```
 ## 今後の改善予定
-- 後で書く
-- 後で書く  
-
-[![Loom Video](https://img.shields.io/badge/Demo_Video-Loom-625DF5?style=for-the-badge&logo=loom)](https://www.loom.com/share/f1c61223d89d4a6d8e3178d5b03df2fc)
-
-[▶️ 動作デモ動画を視聴する（Loom）](https://www.loom.com/embed/f1c61223d89d4a6d8e3178d5b03df2fc)
+- キュー処理の改善検討
