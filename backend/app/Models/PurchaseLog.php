@@ -17,6 +17,8 @@ use Illuminate\Support\Collection;
 'quantity' ,'shop_type', 'purchased_at'])]
 class PurchaseLog extends Model
 {
+    use HasFactory;
+
     protected $casts = [
         'shop_type' => ShopType::class,
         'purchased_at' => 'datetime',

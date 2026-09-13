@@ -20,7 +20,6 @@ type UserItemProps = {
 const UserItem = ({
   user,
   deleteUser,
-  updateUser,
   onEdit,
 }: UserItemProps) => {
   return (

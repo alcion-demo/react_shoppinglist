@@ -25,7 +25,7 @@ class RecipeShareService
             '=' => ''
         ]);
 
-        return url('/recipes/share/' . $encoded);
+        return url('/api/recipes/share/' . $encoded);
     }
 
     public function decode(string $data): array

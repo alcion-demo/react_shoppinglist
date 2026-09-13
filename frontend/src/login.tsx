@@ -42,8 +42,10 @@ const Login = ({ onLoginSuccess, onRegister }: LoginProps) => {
       console.log('user status:', userResponse.status);
 
       onLoginSuccess(userResponse.data);
-    } catch (error) {
+    } catch (error: any) {
       console.error('login error:', error);
+
+      setError('メールアドレスまたはパスワードが正しくありません');
     }
   };
 

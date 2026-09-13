@@ -30,23 +30,24 @@ Route::middleware('auth:sanctum')->group(function () {
     // ログアウト
     Route::post('/logout', function (Request $request) {
     Auth::guard('web')->logout();
+
     $request->session()->invalidate();
-        $request->session()->regenerateToken();
+    $request->session()->regenerateToken();
 
         return response()->json([
             'message' => 'Logged out',
         ]);
-    });
+    })->middleware('web');
 
     //AI献立
     Route::post('/recipes', [RecipeController::class, 'store']);
     Route::get('/recipes/{jobId}', [RecipeController::class, 'show']);
 
-    //献立共有
-    Route::get('/recipes/share/{data}', [RecipeController::class, 'shared'])
-        ->name('shopping.share');
-
 });
 
 Route::apiResource('users', AdminUserController::class)
     ->except(['show']);
+
+//献立共有
+Route::get('/recipes/share/{data}', [RecipeController::class, 'shared'])
+    ->name('shopping.share');

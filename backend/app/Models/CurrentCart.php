@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use App\Enums\ShopType;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 #[Fillable(['shopping_item_id', 'price', 'quantity', 'shop_type'])]
 class CurrentCart extends Model
 {
+    use HasFactory;
+
     protected $casts = [
         'shop_type' => ShopType::class,
     ];

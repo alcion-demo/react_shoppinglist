@@ -4,7 +4,6 @@ import ListSection from './ListSection';
 import QuickMenu from './QuickMenu';
 import HistorySection from './HistorySection';
 import BottomNav from '../../components/BottomNav';
-import Header from '../../components/Header';
 import RecipeSection from './recipe/RecipeSection';
 
 type ShopType = {
