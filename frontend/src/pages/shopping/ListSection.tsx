@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../../utils/axios';
 import DisplayCard from './DisplayCard';
 import EditForm from './EditForm';
@@ -24,10 +24,11 @@ type ShoppingItem = {
 type ListSectionProps = {
   shopTypes: ShopType[];
   items: ShoppingItem[];
+  initialMessage?: string;
   onActionSuccess: () => void;
 };
 
-const ListSection = ({ shopTypes, items, onActionSuccess }: ListSectionProps) => {
+const ListSection = ({ shopTypes, items, initialMessage, onActionSuccess }: ListSectionProps) => {
   const [name, setName] = useState('');
   const [shopType, setShopType] = useState(shopTypes[0]?.value ?? '');
   const [price, setPrice] = useState('');
@@ -37,6 +38,12 @@ const ListSection = ({ shopTypes, items, onActionSuccess }: ListSectionProps) =>
 
   const [isFormActive, setIsFormActive] = useState(false);
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+      if (initialMessage) {
+        setMessage(initialMessage);
+      }
+    }, [initialMessage]);
 
   const handleAdd = async (event: any) => {
     event.preventDefault();
@@ -80,6 +87,7 @@ const ListSection = ({ shopTypes, items, onActionSuccess }: ListSectionProps) =>
   };
 
   const handleDelete = async (id: number) => {
+    setMessage('');
     if (!window.confirm('リストから削除しますか？')) {
       return;
     }
@@ -95,6 +103,7 @@ const ListSection = ({ shopTypes, items, onActionSuccess }: ListSectionProps) =>
   };
 
   const handlePurchase = async (id: number) => {
+    setMessage('');
     try {
       await api.post(`/api/shopping-items/${id}/purchase`);
 
@@ -152,7 +161,7 @@ const ListSection = ({ shopTypes, items, onActionSuccess }: ListSectionProps) =>
               min="0"
               value={price}
               onChange={(event) => setPrice(event.target.value)}
-              className="w-28 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-sm"
+              className="w-28 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-sm px-2"
               placeholder="単価"
             />
 
@@ -160,7 +169,7 @@ const ListSection = ({ shopTypes, items, onActionSuccess }: ListSectionProps) =>
               type="text"
               value={quantity}
               onChange={(event) => setQuantity(event.target.value)}
-              className="w-16 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-sm"
+              className="w-16 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-sm px-2"
               placeholder="個"
             />
 

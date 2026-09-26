@@ -54,11 +54,11 @@ type FrequentItem = {
 const ShoppingPage = () => {
   const [data, setData] = useState<ShoppingData | null>(null);
   const [activeTab, setActiveTab] = useState('list');
+  const [actionMessage, setActionMessage] = useState('');
 
   const fetchShoppingData = async () => {
     try {
       const response = await api.get('/api/shopping-items');
-      // console.log('shopping data:', response.data);
 
       console.log(
         'frequentItems:',
@@ -85,6 +85,24 @@ const ShoppingPage = () => {
     fetchShoppingData();
   }, []);
 
+  const handleReadd = async (item: { id: number; name: string }) => {
+    try {
+      await api.post('/api/shopping-items', {
+        name: item.name,
+        shop_type: data?.shopTypes[0]?.value ?? 1, // デフォルトのショップ種別
+        price: null,
+        quantity: null,
+      });
+
+      // データの最新化
+      await fetchShoppingData();
+      alert(`「${item.name}」をリストに追加しました！`);
+    } catch (error) {
+      console.error('readd error:', error);
+      alert('追加に失敗しました。');
+    }
+  };
+
   if (data === null) {
     return <div>Loading...</div>;
   }
@@ -103,7 +121,8 @@ const ShoppingPage = () => {
             <QuickMenu
               frequentItems={frequentItems}
               items={data.items}
-              onAdded={() => {
+              onAdded={(msg) => {
+                if (msg) setActionMessage(msg);
                 fetchShoppingData();
               }}
             />
@@ -112,7 +131,9 @@ const ShoppingPage = () => {
               <ListSection
                 shopTypes={data.shopTypes}
                 items={data.items}
+                initialMessage={actionMessage}
                 onActionSuccess={() => {
+                  setActionMessage('');
                   fetchShoppingData();
                 }}
               />
@@ -123,7 +144,9 @@ const ShoppingPage = () => {
         {/* 履歴 */}
         {activeTab === 'history' && (
           <div>
-            <HistorySection history={data.history} />
+            <HistorySection history={data.history} 
+            onReadd={handleReadd} 
+            />
           </div>
         )}
 

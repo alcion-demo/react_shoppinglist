@@ -15,7 +15,7 @@ type CartItem = {
 type QuickMenuProps = {
   frequentItems: FrequentItem[];
   items: CartItem[];
-  onAdded: () => void;
+  onAdded: (message?: string) => void;
 };
 
 const QuickMenu = ({
@@ -35,7 +35,7 @@ const QuickMenu = ({
         shop_type: 1,
       });
 
-      onAdded();
+      onAdded(`✨ 「${name}」を追加しました。`);
     } catch (error: any) {
       console.log('quick add error:', error.response?.status);
       console.log('quick add error data:', error.response?.data);

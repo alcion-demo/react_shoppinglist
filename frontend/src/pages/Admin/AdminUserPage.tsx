@@ -25,6 +25,8 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
 
   const [editingUser, setEditingUser] = useState<User | null>(null);
 
+  const [message, setMessage] = useState('');
+
   const filteredUsers = users.filter((user) =>
     user.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
     user.email.toLowerCase().includes(searchKeyword.toLowerCase())
@@ -48,6 +50,12 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
   }, []);
 
   const deleteUser = async (id: number) => {
+    setMessage('');
+
+    if (!window.confirm('このユーザーを削除しますか？')) {
+      return;
+    }
+
     try {
       const response = await api.delete(`/api/admin/users/${id}`);
 
@@ -56,6 +64,8 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
       setUsers((prevUsers) =>
         prevUsers.filter((user) => user.id !== id)
       );
+      setMessage('🗑️ ユーザーを削除しました。');
+
     } catch (error) {
       console.error('delete user error:', error);
     }
@@ -67,6 +77,7 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
     email: string,
     isAdmin: boolean
   ) => {
+    setMessage('');
     try {
       await api.put(`/api/admin/users/${id}`, {
         name,
@@ -76,6 +87,8 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
 
       await fetchUsers();
       setEditingUser(null);
+
+      setMessage('✏️ ユーザー情報を更新しました。');
 
       return {};
     } catch (error: any) {
@@ -97,6 +110,7 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
     isAdmin: boolean
   ) => {
     setErrors({});
+    setMessage('');
 
     try {
       const response = await api.post('/api/admin/users', {
@@ -114,6 +128,8 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
 
       // フォームを閉じる
       setShowForm(false);
+
+      setMessage('✨ ユーザーを登録しました。');
 
     } catch (error: any) {
       console.error('create user error:', error);
@@ -153,6 +169,13 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
           </button>
         </div>
       </header>
+
+      {/* メッセージ表示エリア */}
+      {message && (
+        <div className="mb-4 rounded-xl bg-green-500/10 border border-green-500/20 p-3 text-sm font-bold text-green-500 dark:text-green-400">
+          {message}
+        </div>
+      )}
 
       {editingUser ? (
         <UserEditForm
@@ -209,6 +232,7 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
           <button
             type="button"
             onClick={() => {
+              setMessage('');
               setErrors({});
               setShowForm(true);
             }}
@@ -267,7 +291,10 @@ const AdminUserPage = ({ onClose }: AdminUserPageProps) => {
                 user={user}
                 deleteUser={deleteUser}
                 updateUser={updateUser}
-                onEdit={(user) => setEditingUser(user)}
+                onEdit={(user) => {
+                  setMessage('');
+                  setEditingUser(user)
+                }}
               />
             ))}
           </div>

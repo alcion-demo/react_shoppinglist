@@ -108,7 +108,7 @@ const EditForm = ({
             min="0"
             value={price}
             onChange={(event) => setPrice(event.target.value)}
-            className="w-24 rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-xs"
+            className="w-24 rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-xs px-2"
             placeholder="単価"
           />
 
@@ -116,7 +116,7 @@ const EditForm = ({
             type="text"
             value={quantity}
             onChange={(event) => setQuantity(event.target.value)}
-            className="w-16 rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-xs"
+            className="w-16 rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white text-xs px-2"
             placeholder="個"
           />
 
