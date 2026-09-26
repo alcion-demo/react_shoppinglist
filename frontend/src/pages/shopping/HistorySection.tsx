@@ -14,9 +14,10 @@ type PurchaseHistory = {
 
 type HistorySectionProps = {
   history: Record<string, PurchaseHistory[]>;
+  onReadd?: (item: PurchaseHistory['item']) => void;
 };
 
-const HistorySection = ({ history }: HistorySectionProps) => {
+const HistorySection = ({ history, onReadd }: HistorySectionProps) => {
   const [search, setSearch] = useState('');
   const [openHistory, setOpenHistory] = useState<Record<string, boolean>>({});
 
@@ -137,19 +138,24 @@ const HistorySection = ({ history }: HistorySectionProps) => {
                           {log.item.name}
                         </span>
 
-                        <span className="text-[10px] text-gray-400">
-                          {log.price && log.price > 0 &&
-                            `¥${log.price.toLocaleString()}`
-                          }
+                        {/* 価格か個数のどちらか一方でも存在すれば表示 */}
+                          {((log.price && log.price > 0) || log.quantity) && (
+                            <span className="text-[10px] text-gray-400">
+                              {/* 価格がある場合のみ表示 */}
+                              {log.price != null && log.price > 0 && `¥${log.price.toLocaleString()}`}
+                              
+                              {/* 両方ある場合だけスラッシュを表示 */}
+                              {log.price != null && log.price > 0 && log.quantity && ' / '}
 
-                          {log.quantity &&
-                            ` / ${log.quantity}`
-                          }
-                        </span>
+                              {/* 個数がある場合表示 */}
+                              {log.quantity && `${log.quantity}`}
+                            </span>
+                          )}
                       </div>
 
                       <button
                         type="button"
+                        onClick={() => onReadd && onReadd(log.item)}
                         className="text-xs text-blue-500 font-bold px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-full"
                       >
                         ＋再追加
