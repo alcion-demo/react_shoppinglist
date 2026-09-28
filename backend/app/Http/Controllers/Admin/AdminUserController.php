@@ -24,8 +24,7 @@ class AdminUserController extends Controller
      */
     public function index(Request $request)
     {
-        // $users = $this->user->userList($request->input('keyword'));
-$users = $this->userService->userList();
+        $users = $this->userService->userList();
         return response()->json($users);
     }
 
@@ -40,14 +39,6 @@ $users = $this->userService->userList();
         return response()->json([
             'message' => 'ユーザーを追加しました',
         ], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
     }
 
     /**
